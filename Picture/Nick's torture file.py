@@ -31,6 +31,14 @@ screen = pygame.display.set_mode((S_w, S_h))
 screen.fill((255, 255, 255))
 
 def draw_car(x, y, size, a, color): #car(300, 1000, 0.3, a)
+    """
+    draw_car рисует машину
+    x, y -- координаты расположения машины
+    size -- коэффицент, для размера машины 
+    a -- направление машины (0.3 - влево, 1 - вправо) 
+    #a было использованно у автора, данного творения, и я его оставил, так как оно работает?
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     ellipse(screen, (10, 33, 42), (x - 30 * size + a * 330 * size, y + 42 * size, 60 * size, 10 * size))
     rect(screen, COLOR[color], (x, y, 330 * size, 60 * size)) #корпус
     rect(screen, COLOR[color], (25 * a * size + 70 * size + x, y - 30 * size, 165 * size, 60 * size)) #кабина
@@ -39,16 +47,14 @@ def draw_car(x, y, size, a, color): #car(300, 1000, 0.3, a)
     ellipse(screen, (10, 33, 42), (35 * size + x, 42 * size + y, 60 * size, 40 * size))
     ellipse(screen, (10, 33, 42), (235 * size + x, 42 * size + y, 60 * size, 40 * size))
 
-'''
-draw_car рисует машину
-x, y -- координаты расположения машины
-size -- коэффицент, для размера машины 
-a -- направление машины (0.3 - влево, 1 - вправо) 
-#a было использованно у автора, данного творения, и я его оставил, так как оно работает?
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 def draw_background(color, N):
+    """
+    draw_background - рисует наборы из различных прямоугольников и эллипсов
+    N - количество наборов, состоящих из двух прямоугольников и эллипса
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     for i in range(N):
         SURFACE_background = pygame.Surface((S_w, S_h), pygame.SRCALPHA)
         x1 = random.randint(0, 1123)
@@ -70,68 +76,83 @@ def draw_background(color, N):
         ellipse(SURFACE_background, (COLOR[color] +(150,)), (x3, y3, rect_width, rect_height))
         screen.blit(SURFACE_background, (0, 0))
 
-'''
-draw_background - рисует наборы из различных прямоугольников и эллипсов
-N - количество наборов, состоящих из двух прямоугольников и эллипса
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 def draw_road(color):
+    """
+    draw_road - рисует дорогу?)
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     rect(screen, (color), (0, 461, 794, 762)) #Дорога
 
-'''
-draw_road - рисует дорогу?)
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 element = [0 for i in range(100)]
 def draw_circles1_background(color):
+    """
+    draw_circle -- рисует красивые рассходящиеся эллипсы? не знаю честно как это назвать
+    я думал добавть сюда еще и расположение по x, y, но их и так почти не видно, поэтому решил без этого
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     for i in range(50):
         element[i] = pygame.Surface((S_w, S_h), pygame.SRCALPHA)
         element[i].fill((0))
         ellipse(element[i], (COLOR[color] +(6,)), (0 - 3 * i, -10 - 3 * i, 40 + 12 * i, 20 + 6 * i))
 def draw_circles2_background(color):
+    """
+    draw_circle -- рисует красивые рассходящиеся эллипсы? не знаю честно как это назвать
+    я думал добавть сюда еще и расположение по x, y, но их и так почти не видно, поэтому решил без этого
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     for i in range(50):
         ellipse(element[i], (COLOR[color] +(10,)), (200 - 6 * i, 220 - 6 * i, 40 + 24 * i, 20 + 12 * i))
 def draw_circles3_background(color):
+    """
+    draw_circle -- рисует красивые рассходящиеся эллипсы? не знаю честно как это назвать
+    я думал добавть сюда еще и расположение по x, y, но их и так почти не видно, поэтому решил без этого
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     for i in range(35):
         ellipse(element[i], (COLOR[color] +(8,)), (750 - 6 * i, 100 - 6 * i, 40 + 24 * i, 20 + 12 * i))
         screen.blit(element[i], (0, 0))
 def draw_circles4_background(color):
+    """
+    draw_circle -- рисует красивые рассходящиеся эллипсы? не знаю честно как это назвать
+    я думал добавть сюда еще и расположение по x, y, но их и так почти не видно, поэтому решил без этого
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     for i in range(35):
         element[i] = pygame.Surface((S_w, S_h), pygame.SRCALPHA)
         element[i].fill((0))
         ellipse(element[i], (COLOR[color] +(8,)), (300 - 12 * i, 1000 - 12 * i, 40 + 48 * i, 20 + 24 * i))
         screen.blit(element[i], (0, 0))
 
-'''
-draw_circle (1,2,3,4) -- рисует красивые рассходящиеся эллипсы? не знаю честно как это назвать
-я думал добавть сюда еще и расположение по x, y, но их и так почти не видно, поэтому решил без этого
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 def draw_house(x, y, color):
+    """
+    draw_house -- рисует домик с обводочкой
+    x, y -- расположение дома
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     house = pygame.Surface((S_w, S_h), pygame.SRCALPHA)
     rect(house, COLOR[color], (x, y, 444, 521)) #дом правый
     rect(house, (255, 255, 255), (x, y, 444, 521), 3) #Обводка правого дома
     screen.blit(house, (0, 0))
 
-'''
-draw_house -- рисует домик с обводочкой
-x, y -- расположение дома
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 def draw_tower(x, y, a, b, color):
+    """
+    draw_tower -- рисует башенки? перед домами
+    x, y -- расположение башенок
+    a, b -- р
+    азмеры башенки по x и по y
+    color - цвет в ординарных ковычках, example: 'black'
+    """
     rect(screen, COLOR[color], (x, y, a, b)) #башня 4
 
-'''
-draw_tower -- рисует башенки? перед домами
-x, y -- расположение башенок
-a, b -- р
-азмеры башенки по x и по y
-color - цвет в ординарных ковычках, example: 'black'
-'''
+
 
 draw_circles1_background('cyan')
 draw_circles2_background('blue')
