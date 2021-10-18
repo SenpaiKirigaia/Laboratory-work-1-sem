@@ -31,10 +31,16 @@ name_text = f.render('Напишите ваше имя', True, CYAN)
 
 class Ball:
     def __init__(self, coord, velocity, color, r, randmove):
-        '''
+        """
         Задает все начальные значения для шарика
-        coord - 
-        '''
+        coord - координаты [x, y]
+        velocity - скорость [v_x, v_y]
+        color - цвет шарика
+        r - радиус шарика
+        randmove - дополнение к движению (ускорение,
+        направленное к какой либо из стенок
+        (зависящее от начальных скоростей шарика))
+        """
         self.coord = coord
         self.color = color
         self.velocity = velocity
@@ -61,6 +67,14 @@ class Ball:
         self.acc_y = acc_y
 
     def move(self):
+        """
+        функция движения шарика, которая в том числе и рисует его
+        два типа движения, которые отличаются наличием randmove:
+        -обычное:
+            прямолинейное движение, просто по начальным V_x и V_y
+        -необычное:
+            движение под силой гравитации (наличие притяжения у одной из стенок)
+        """
         circle(screen, self.color, self.coord, self.r)
         v0_x, v0_y = self.velocity
         self.coord[0] += v0_x
@@ -70,6 +84,13 @@ class Ball:
         
 
     def collisions(self):
+        """
+        функция сдерживающая шарики в "клетке"
+        работает 2-мя способами:
+        -При касании стенки скорость меняется на противоположную
+        с тем же модулем
+        -При выходе шарика "далеко" за рамки, просто телепортирует шарик в клетку
+        """
         if self.coord[0] <= 40 or self.coord[0] >= BORDER_EDGES[0]:
             self.velocity[0] *= -1
         if self.coord[1] <= 40 or self.coord[1] >= BORDER_EDGES[1]:
@@ -85,6 +106,10 @@ class Ball:
 
 
     def event(self):
+        """
+        функция, срабатывающая при клике мышки, проверяет попадание по шарику
+        при попадании помечает шарик, впоследствии он уничтожается
+        """
         if (X_m - self.coord[0])**2 + (Y_m - self.coord[1])**2 <= (self.r)**2:
             self.flag = False
 
