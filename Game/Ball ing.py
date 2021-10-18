@@ -10,6 +10,7 @@ screen = pygame.display.set_mode((1200, 900))
 
 BORDER_EDGES = [1000, 800]
 N = 10
+L = 0
 end = 0
 count = 0
 f = pygame.font.Font(None,36) 
@@ -23,11 +24,17 @@ CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
+Name = ""
+
 end_text = f.render('Выход', True, (178, 103, 49))
-name_text = f.render('Напишите имя в коммандной строке', True, CYAN)
+name_text = f.render('Напишите ваше имя', True, CYAN)
 
 class Ball:
     def __init__(self, coord, velocity, color, r, randmove):
+        '''
+        Задает все начальные значения для шарика
+        coord - 
+        '''
         self.coord = coord
         self.color = color
         self.velocity = velocity
@@ -129,17 +136,24 @@ while not finished:
             X_m, Y_m = event.pos
             for ball in pool:
                 ball.event()
-            if end >= 10:
-                if 450 < X_m <600 and 600 < Y_m < 650:
-                    Name = input()
-                    with open('Results.JSON', 'r') as f:
-                        loaded = json.load(f)
+            if end >= 15:
+                if 450 < X_m <600 and 300 < Y_m < 350:
+                    with open('Results.JSON', 'r') as h:
+                        loaded = json.load(h)
                     loaded["results"].append({"name": Name, "points": count})
-                    with open('Results.JSON', 'w') as f:
-                        json.dump(loaded, f)
-                    f.close()
+                    with open('Results.JSON', 'w') as h:
+                        json.dump(loaded, h)
+                    h.close()
                     pygame.quit()
+        elif event.type == pygame.KEYDOWN:
+            if end >= 10 and end < 15 and event.key != 8 and event.key != 13:
+                Name = Name + event.unicode
+            if end >= 10 and end < 15 and event.key == 8:
+                Name = Name[:-1]
+            if end >= 10 and end < 15 and event.key == 13:
+                end += 10
 
+                
     for ball in pool:
         ball.move()
         ball.collisions()
@@ -157,12 +171,36 @@ while not finished:
     if end < 10:
         screen.blit(text, (10, 10))
 
-    if end >=10 :
+    if end >= 10 and end <= 15:
         for ball in pool:
             pool.remove(ball)
-        screen.blit(text, (450, 400))
-        screen.blit(name_text, (400, 500))
-        screen.blit(end_text, (450, 600))
+        screen.blit(text, (450, 100))
+        screen.blit(name_text, (400, 200))
+        name_name_text = f.render(Name, True, CYAN)
+        screen.blit(name_name_text, (450, 300))
+        
+    if end >= 15:
+        with open('Results.JSON', 'r') as h:
+            loaded = json.load(h)
+        h.close()
+
+        record = loaded['results']
+        rec1 = record[-1]
+        rec2 = record[-2]
+        rec3 = record[-3]
+        leaderboard_names1 = f.render( rec1['name'] + ': ' + str(rec1['points']), True, GREEN)
+        leaderboard_names2 = f.render( rec2['name'] + ': ' + str(rec2['points']), True, GREEN)
+        leaderboard_names3 = f.render( rec3['name'] + ': ' + str(rec3['points']), True, GREEN)
+        screen.blit(leaderboard_names1, (350, 350))
+        screen.blit(leaderboard_names2, (350, 450))
+        screen.blit(leaderboard_names3, (350, 550))
+
+        leaderboard = f.render('Leaderboard', True, RED)
+        screen.blit(text, (450, 100))
+        screen.blit(leaderboard, (350, 325))
+        screen.blit(name_name_text, (400, 200))
+        screen.blit(end_text, (450, 300))
+
 
     pygame.display.update()
     screen.fill(BLACK)
