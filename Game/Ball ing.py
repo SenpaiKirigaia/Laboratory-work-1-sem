@@ -1,4 +1,5 @@
 import pygame
+import json
 from pygame.draw import *
 from random import randint
 
@@ -12,7 +13,6 @@ N = 10
 end = 0
 count = 0
 f = pygame.font.Font(None,36) 
-end_text = f.render('Помогите сделать кнопку выхода', True, (178, 103, 49))
 
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
@@ -22,6 +22,9 @@ MAGENTA = (255, 0, 255)
 CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
+
+end_text = f.render('Выход', True, (178, 103, 49))
+name_text = f.render('Напишите имя в коммандной строке', True, CYAN)
 
 class Ball:
     def __init__(self, coord, velocity, color, r, randmove):
@@ -112,7 +115,6 @@ for _ in range (N):
     color = 'RED'
     pool.append(Ball([x, y], [V_x, V_y], color, r, randmove))
 
-
 pygame.display.update()
 clock = pygame.time.Clock()
 finished = False
@@ -127,6 +129,16 @@ while not finished:
             X_m, Y_m = event.pos
             for ball in pool:
                 ball.event()
+            if end >= 10:
+                if 450 < X_m <600 and 600 < Y_m < 650:
+                    Name = input()
+                    with open('Results.JSON', 'r') as f:
+                        loaded = json.load(f)
+                    loaded["results"].append({"name": Name, "points": count})
+                    with open('Results.JSON', 'w') as f:
+                        json.dump(loaded, f)
+                    f.close()
+                    pygame.quit()
 
     for ball in pool:
         ball.move()
@@ -149,14 +161,14 @@ while not finished:
         for ball in pool:
             pool.remove(ball)
         screen.blit(text, (450, 400))
+        screen.blit(name_text, (400, 500))
         screen.blit(end_text, (450, 600))
-
-
-
-
-
 
     pygame.display.update()
     screen.fill(BLACK)
+
+
+
+
 
 pygame.quit()
