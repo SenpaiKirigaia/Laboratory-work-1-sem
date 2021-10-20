@@ -8,13 +8,6 @@ pygame.init()
 FPS = 15
 screen = pygame.display.set_mode((1200, 900))
 
-BORDER_EDGES = [1000, 800]
-N = 10
-L = 0
-end = 0
-count = 0
-f = pygame.font.Font(None,36) 
-
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
@@ -24,13 +17,22 @@ CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
 
+BORDER_EDGES = [1000, 800]
+N = 10
+L = 0
+end = 0
+count = 0
 Name = ""
+pool = []
 
+
+
+f = pygame.font.Font(None,36) 
 end_text = f.render('Выход', True, (178, 103, 49))
 name_text = f.render('Напишите ваше имя', True, CYAN)
 
 class Ball:
-    def __init__(self, coord, velocity, color, r, randmove):
+    def __init__(self, coord, velocity, color, r, randmove, direction):
         """
         Задает все начальные значения для шарика
         coord - координаты [x, y]
@@ -47,24 +49,23 @@ class Ball:
         self.r = r
         self.flag = True 
         self.randmove = randmove
+        self.vx_dir, self.vy_dir = direction
         if self.randmove == 1:
-            if vx_dir == 1 and vy_dir == 1:
-                acc_x = -1
-                acc_y = 0
-            if vx_dir == 1 and vy_dir == -1:
-                acc_x = 0
-                acc_y = 1
-            if vx_dir == -1 and vy_dir == 1:
-                acc_x = 0
-                acc_y = -1
-            if vx_dir == -1 and vy_dir == -1:
-                acc_x = 1
-                acc_y = 0
+            if self.vx_dir == 1 and self.vy_dir == 1:
+                self.acc_x = -1
+                self.acc_y = 0
+            if self.vx_dir == 1 and self.vy_dir == -1:
+                self.acc_x = 0
+                self.acc_y = 1
+            if self.vx_dir == -1 and self.vy_dir == 1:
+                self.acc_x = 0
+                self.acc_y = -1
+            if self.vx_dir == -1 and self.vy_dir == -1:
+                self.acc_x = 1
+                self.acc_y = 0
         else:
-            acc_x = 0
-            acc_y = 0
-        self.acc_x = acc_x
-        self.acc_y = acc_y
+            self.acc_x = 0
+            self.acc_y = 0
 
     def move(self):
         """
@@ -113,9 +114,7 @@ class Ball:
         if (X_m - self.coord[0])**2 + (Y_m - self.coord[1])**2 <= (self.r)**2:
             self.flag = False
 
-pool = []
-
-for _ in range (N):
+def new_usual_ball():
     x = randint(100,950)
     y = randint(100, 750)
     vx_dir = randint(-1, 1)
@@ -129,9 +128,9 @@ for _ in range (N):
     r = randint(25, 40)
     randmove = 0
     color = 'BLUE'
-    pool.append(Ball([x, y], [V_x, V_y], color, r, randmove))
+    pool.append(Ball([x, y], [V_x, V_y], color, r, randmove, [vx_dir, vy_dir]))
 
-for _ in range (N):
+def new_unusual_ball():
     x = randint(50,950)
     y = randint(50, 750)
     vx_dir = randint(-1, 1)
@@ -145,7 +144,11 @@ for _ in range (N):
     r = randint(10, 20)
     randmove = 1
     color = 'RED'
-    pool.append(Ball([x, y], [V_x, V_y], color, r, randmove))
+    pool.append(Ball([x, y], [V_x, V_y], color, r, randmove, [vx_dir, vy_dir]))
+
+for _ in range (N):
+    new_usual_ball()
+    new_unusual_ball()    
 
 pygame.display.update()
 clock = pygame.time.Clock()
@@ -162,13 +165,16 @@ while not finished:
             for ball in pool:
                 ball.event()
             if end >= 15:
-                if 450 < X_m <600 and 300 < Y_m < 350:
+                if 450 < X_m < 600 and 300 < Y_m < 350:
                     pygame.quit()
+
         elif event.type == pygame.KEYDOWN:
             if end >= 10 and end < 15 and event.key != 8 and event.key != 13:
                 Name = Name + event.unicode
+
             if end >= 10 and end < 15 and event.key == 8:
                 Name = Name[:-1]
+
             if end >= 10 and end < 15 and event.key == 13:
                 with open('Results.JSON', 'r') as h:
                     loaded = json.load(h)
@@ -233,6 +239,7 @@ while not finished:
         screen.blit(name_name_text, (400, 200))
         screen.blit(end_text, (450, 300))
         screen.blit(leaderboard, (350, 325))
+
         c = 0
         for i in res:
             man = f.render(i["name"] + " " + str(i["points"]), True, GREEN)
