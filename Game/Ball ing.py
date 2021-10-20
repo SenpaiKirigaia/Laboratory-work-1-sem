@@ -163,12 +163,6 @@ while not finished:
                 ball.event()
             if end >= 15:
                 if 450 < X_m <600 and 300 < Y_m < 350:
-                    with open('Results.JSON', 'r') as h:
-                        loaded = json.load(h)
-                    loaded["results"].append({"name": Name, "points": count})
-                    with open('Results.JSON', 'w') as h:
-                        json.dump(loaded, h)
-                    h.close()
                     pygame.quit()
         elif event.type == pygame.KEYDOWN:
             if end >= 10 and end < 15 and event.key != 8 and event.key != 13:
@@ -176,6 +170,12 @@ while not finished:
             if end >= 10 and end < 15 and event.key == 8:
                 Name = Name[:-1]
             if end >= 10 and end < 15 and event.key == 13:
+                with open('Results.JSON', 'r') as h:
+                    loaded = json.load(h)
+                loaded["results"].append({"name": Name, "points": count})
+                with open('Results.JSON', 'w') as h:
+                    json.dump(loaded, h)
+                h.close()
                 end += 10
 
                 
@@ -208,23 +208,36 @@ while not finished:
         with open('Results.JSON', 'r') as h:
             loaded = json.load(h)
         h.close()
+        res = loaded["results"]
+        table = []
+        names = []
+        for i in res:
+            table.append(i["points"])
+            names.append(i["name"])
+        A = len(table)
+        for i in range(A-1):
+            for j in range(A-i-1):
+                if table[j] > table[j+1]:
+                    table[j], table[j+1] = table[j+1], table[j]
+                    names[j], names[j+1] = names[j+1], names[j]
 
-        record = loaded['results']
-        rec1 = record[-1]
-        rec2 = record[-2]
-        rec3 = record[-3]
-        leaderboard_names1 = f.render( rec1['name'] + ': ' + str(rec1['points']), True, GREEN)
-        leaderboard_names2 = f.render( rec2['name'] + ': ' + str(rec2['points']), True, GREEN)
-        leaderboard_names3 = f.render( rec3['name'] + ': ' + str(rec3['points']), True, GREEN)
-        screen.blit(leaderboard_names1, (350, 350))
-        screen.blit(leaderboard_names2, (350, 450))
-        screen.blit(leaderboard_names3, (350, 550))
+        z = len(table) - 1
+        while z >= 0:
+            for i in res:
+                i["points"] = table[z]
+                i["name"] = names[z]
+                z += -1
 
         leaderboard = f.render('Leaderboard', True, RED)
         screen.blit(text, (450, 100))
-        screen.blit(leaderboard, (350, 325))
         screen.blit(name_name_text, (400, 200))
         screen.blit(end_text, (450, 300))
+        screen.blit(leaderboard, (350, 325))
+        c = 0
+        for i in res:
+            man = f.render(i["name"] + " " + str(i["points"]), True, GREEN)
+            screen.blit(man, (350, 350 + c*25))
+            c += 1
 
 
     pygame.display.update()
