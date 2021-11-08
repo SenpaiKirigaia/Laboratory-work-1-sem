@@ -75,6 +75,7 @@ def parse_planet_parameters(line, planet):
     """
     pass  # FIXME: допишите парсер
 
+'''
 def write_space_objects_data_to_file(output_filename, space_objects):
     """Сохраняет данные о космических объектах в файл.
 
@@ -94,6 +95,7 @@ def write_space_objects_data_to_file(output_filename, space_objects):
         for obj in space_objects:
             print(out_file, "%s %d %s %f" % ('1', 2, '3', 4.5))
             # FIXME!
+'''
 
 
 if __name__ == "__main__":
