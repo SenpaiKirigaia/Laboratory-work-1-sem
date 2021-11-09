@@ -3,6 +3,19 @@
 
 from solar_objects import Star, Planet
 from solar_vis import DrawableObject
+import json
+
+def read_info(obj):
+    type = obj['type']
+    radius = obj['radius']
+    color = obj['color']
+    mass = obj['mass']
+    X_c = obj['X_c']
+    Y_c = obj['Y_c']
+    X_v = obj['X_v']
+    Y_v = obj['Y_v']
+    return type, radius, color, mass, X_c, Y_c, X_v, Y_v
+
 
 def read_space_objects_data_from_file(input_filename):
     """Cчитывает данные о космических объектах из файла, создаёт сами объекты
@@ -14,24 +27,19 @@ def read_space_objects_data_from_file(input_filename):
     """
 
     objects = []
-    with open(input_filename, 'r') as input_file:
-        for line in input_file:
-            if len(line.strip()) == 0 or line[0] == '#':
-                continue  # пустые строки и строки-комментарии пропускаем
 
-            object_type = line.split()[0].lower()
-            if object_type == "star":
-                star = Star()
-                parse_star_parameters(line, star)
-                objects.append(star)
-            elif object_type == "planet":
-                planet = Planet()
-                parse_planet_parameters(line, planet)
-                objects.append(planet)
-            else:
-                print("Unknown space object")
+    with open('solar_system.json', 'r') as f:
+        loaded = json.load(f)  # загружает файл в loaded
+
+    spisok = loaded["obj"]  # загружает из loaded список объектов
+    inf = []  # массив информации по объектам
+    for obj in spisok:  # перебегает по каждому космическому объекту
+        if obj["type"] != "Star" and obj["type"] != "Planet":
+            print(obj["type"] + ' - Unknown space object')
+        inf.append(read_info(obj))  # передает в inf информацию по объекту
 
     return [DrawableObject(obj) for obj in objects]
+
 
 
 def parse_star_parameters(line, star):
